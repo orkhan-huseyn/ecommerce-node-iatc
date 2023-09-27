@@ -1,5 +1,9 @@
 const express = require('express');
+const cors = require('cors');
+
 const sequelize = require('./database/index');
+const authMiddleware = require('./middlewares/auth');
+
 const User = require('./models/user');
 const Product = require('./models/product');
 const Address = require('./models/address');
@@ -18,6 +22,12 @@ sequelize.sync({ force: false });
 
 const app = express();
 
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN,
+  })
+);
+app.use(authMiddleware);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

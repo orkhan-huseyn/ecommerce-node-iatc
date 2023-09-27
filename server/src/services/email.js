@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const moment = require('moment');
+
+const EmailConfirmation = require('../models/emailConfirmation');
 
 const transport = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -17,8 +20,7 @@ async function sendConfirmationEmail(user) {
     .readFileSync(path.resolve('src', 'email-templates', 'confirmation.html'))
     .toString();
 
-  const expiresAt = new Date();
-  expiresAt.setTime(expiresAt.getTime() + 1 * 60 * 60 * 1000);
+  const expiresAt = moment().add(1, 'hour').toDate();
 
   const confirmationToken = crypto.randomBytes(64).toString('base64url');
   const confirmationURL = `http://localhost:8080/auth/email-confirmation/${confirmationToken}`;

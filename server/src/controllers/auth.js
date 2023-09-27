@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
+
 const emailService = require('../services/email');
 
 const User = require('../models/user');
@@ -21,7 +23,7 @@ async function emailConfirmation(req, res) {
     where: {
       confirmationToken,
       expiresAt: {
-        [Op.lt]: new Date(), // TODO: fix timezone problem
+        [Op.lt]: moment().toDate(), // TODO: fix timezone problem
       },
     },
   });
@@ -82,13 +84,21 @@ async function login(req, res) {
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: '1h',
+      expiresIn: '30m',
+    }
+  );
+  const refreshToken = jwt.sign(
+    { userId: user.id },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: '30 days',
     }
   );
 
   res.send({
     error: null,
     accessToken,
+    refreshToken,
   });
 }
 
