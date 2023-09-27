@@ -1,9 +1,14 @@
 const express = require('express');
-const { login, registration } = require('../controllers/authController');
+const {
+  login,
+  registration,
+  emailConfirmation,
+} = require('../controllers/auth');
 
-const authRouter = express.Router();
+const router = express.Router();
 
-authRouter.post('/login', login);
-authRouter.post('/registration', registration);
+router.post('/login', login);
+router.post('/registration', registration);
+router.get('/email-confirmation/:confirmationToken', emailConfirmation);
 
-module.exports = authRouter;
+module.exports = router;
