@@ -64,13 +64,13 @@ async function login(req, res) {
   });
 
   if (!user) {
-    return res.send({
+    return res.status(401).send({
       error: 'Email or password is incorrect!',
     });
   }
 
   if (!bcrypt.compareSync(password, user.password)) {
-    return res.send({
+    return res.status(401).send({
       error: 'Email or password is incorrect!',
     });
   }
