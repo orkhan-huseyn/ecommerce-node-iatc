@@ -3,6 +3,8 @@ const path = require('path');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
+const sequelize = require('sequelize');
+const { Op } = require('sequelize');
 
 const EmailConfirmation = require('../models/emailConfirmation');
 
@@ -15,13 +17,16 @@ const transport = nodemailer.createTransport({
   },
 });
 
+/**
+ * Send confirmation email to given user
+ * @param {sequelize.Model} user
+ */
 async function sendConfirmationEmail(user) {
   const emailTemplate = fs
     .readFileSync(path.resolve('src', 'email-templates', 'confirmation.html'))
     .toString();
 
   const expiresAt = moment().add(1, 'hour').toDate();
-
   const confirmationToken = crypto.randomBytes(64).toString('base64url');
   const confirmationURL = `http://localhost:8080/auth/email-confirmation/${confirmationToken}`;
 
@@ -31,7 +36,7 @@ async function sendConfirmationEmail(user) {
     confirmationToken,
   });
 
-  transport.sendMail({
+  await transport.sendMail({
     from: 'E-Commerce IATC <info@e-commerce-iatc>',
     to: user.email,
     subject: 'Confirm your email',
@@ -41,6 +46,24 @@ async function sendConfirmationEmail(user) {
   });
 }
 
+/**
+ * Returns active confirmation entity
+ * @param {string} confirmationToken
+ */
+async function findActiveConfirmation(confirmationToken) {
+  const emailConfirmation = await EmailConfirmation.findOne({
+    where: {
+      confirmationToken,
+      expiresAt: {
+        [Op.gt]: sequelize.literal('NOW()'),
+      },
+    },
+  });
+
+  return emailConfirmation;
+}
+
 module.exports = {
   sendConfirmationEmail,
+  findActiveConfirmation,
 };

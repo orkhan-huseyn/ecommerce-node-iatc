@@ -1,13 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const IGNORED_ROUTES = [
-  '/auth/login',
-  '/auth/registration',
-  '/auth/email-confirmation',
-  '/auth/token',
-];
-
 /**
  * Authentication middleware
  * @param {express.Request} req
@@ -15,7 +8,7 @@ const IGNORED_ROUTES = [
  * @param {express.NextFunction} next
  */
 function authMiddleware(req, res, next) {
-  if (IGNORED_ROUTES.includes(req.url)) {
+  if (req.url.startsWith('/auth')) {
     return next();
   }
 

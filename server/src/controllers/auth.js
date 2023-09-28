@@ -1,15 +1,9 @@
 const bcrypt = require('bcrypt');
 const express = require('express');
-const { Op } = require('sequelize');
-const jwt = require('jsonwebtoken');
-const moment = require('moment');
 
+const userService = require('../services/users');
 const emailService = require('../services/email');
-
-const User = require('../models/user');
-const EmailConfirmation = require('../models/emailConfirmation');
-
-const SALT_ROUNDS = 10;
+const tokenService = require('../services/token');
 
 /**
  * This controller confirms users email and updates user
@@ -19,14 +13,9 @@ const SALT_ROUNDS = 10;
  */
 async function emailConfirmation(req, res) {
   const { confirmationToken } = req.params;
-  const emailConfirmation = await EmailConfirmation.findOne({
-    where: {
-      confirmationToken,
-      expiresAt: {
-        [Op.lt]: moment().toDate(), // TODO: fix timezone problem
-      },
-    },
-  });
+  const emailConfirmation = await emailService.findActiveConfirmation(
+    confirmationToken
+  );
 
   if (!emailConfirmation) {
     return res.send({
@@ -34,16 +23,7 @@ async function emailConfirmation(req, res) {
     });
   }
 
-  await User.update(
-    {
-      emailConfirmed: true,
-    },
-    {
-      where: {
-        id: emailConfirmation.userId,
-      },
-    }
-  );
+  await userService.confirmEmailById(emailConfirmation.userId);
 
   res.send({
     error: null,
@@ -51,7 +31,7 @@ async function emailConfirmation(req, res) {
 }
 
 /**
- * Logs user in and provides access token
+ * Logs user in and provides token pairs
  * @param {express.Request} req
  * @param {express.Response} res
  * @returns {void}
@@ -59,9 +39,7 @@ async function emailConfirmation(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
-  const user = await User.findOne({
-    where: { email },
-  });
+  const user = await userService.getUserByEmail(email);
 
   if (!user) {
     return res.status(401).send({
@@ -75,25 +53,7 @@ async function login(req, res) {
     });
   }
 
-  const accessToken = jwt.sign(
-    {
-      userId: user.id,
-      fullName: user.fullName,
-      email: user.email,
-      image: user.image,
-    },
-    process.env.JWT_SECRET_KEY,
-    {
-      expiresIn: '30m',
-    }
-  );
-  const refreshToken = jwt.sign(
-    { userId: user.id },
-    process.env.JWT_SECRET_KEY,
-    {
-      expiresIn: '30 days',
-    }
-  );
+  const { accessToken, refreshToken } = tokenService.generateTokenPair(user);
 
   res.send({
     error: null,
@@ -111,21 +71,14 @@ async function login(req, res) {
 async function registration(req, res) {
   const { fullName, email, password } = req.body;
 
-  const existingUser = await User.findOne({ where: { email } });
+  const existingUser = await userService.getUserByEmail(email);
   if (existingUser) {
     return res.status(400).send({
       error: 'User with this email already exists!',
     });
   }
 
-  const hashedPassword = bcrypt.hashSync(password, SALT_ROUNDS);
-
-  const user = await User.create({
-    fullName,
-    email,
-    password: hashedPassword,
-  });
-
+  const user = await userService.createUser(email, fullName, password);
   emailService.sendConfirmationEmail(user);
 
   return res.status(201).send({
