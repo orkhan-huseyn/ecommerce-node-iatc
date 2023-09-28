@@ -28,12 +28,6 @@ function authMiddleware(req, res, next) {
 
   try {
     const payload = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
-    if (payload.exp > Date.now()) {
-      return res.status(401).send({
-        error: 'Access token expired!',
-      });
-    }
-
     req.user = payload;
   } catch (error) {
     return res.status(401).send({ error: error.message });
