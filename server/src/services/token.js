@@ -1,6 +1,8 @@
 const { Model } = require('sequelize');
 const jwt = require('jsonwebtoken');
 
+const userService = require('./users');
+
 /**
  * Generates access token and refresh token pairs
  * @param {Model} user
@@ -15,10 +17,11 @@ function generateTokenPair(user) {
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: '30m',
+      expiresIn: '1m',
     }
   );
 
+  // TODO: how to invalidate refresh token?
   const refreshToken = jwt.sign(
     { userId: user.id },
     process.env.JWT_SECRET_KEY,
@@ -33,6 +36,17 @@ function generateTokenPair(user) {
   };
 }
 
+/**
+ * Verifies refresh token and generates new token pair
+ * @param {string} refreshToken
+ */
+async function refreshAccessToken(refreshToken) {
+  const { userId } = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
+  const user = await userService.getUserById(userId);
+  return generateTokenPair(user);
+}
+
 module.exports = {
   generateTokenPair,
+  refreshAccessToken,
 };

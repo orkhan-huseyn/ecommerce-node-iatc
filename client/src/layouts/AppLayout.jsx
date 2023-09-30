@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import {
   Box,
   Menu,
@@ -8,6 +8,7 @@ import {
   Avatar,
   Text,
   Heading,
+  Button,
 } from '@chakra-ui/react';
 
 function AppLayout() {
@@ -22,6 +23,9 @@ function AppLayout() {
         borderBottomWidth="1px"
       >
         <Heading>E-commerce IATC</Heading>
+        <Button marginLeft="auto" marginRight="4" colorScheme="blue" as={Link} to="/create-product">
+          Create product
+        </Button>
         <Menu>
           <MenuButton>
             <Box display="flex" justifyContent="center" alignItems="center">

@@ -12,6 +12,14 @@ async function getUserByEmail(email) {
 }
 
 /**
+ * Returns a user with given id
+ * @param {string} userId
+ */
+async function getUserById(userId) {
+  return await User.findByPk(userId);
+}
+
+/**
  * Creates new user with hashed password
  * @param {string} email
  * @param {string} fullName
@@ -46,6 +54,7 @@ async function confirmEmailById(userId) {
 
 module.exports = {
   getUserByEmail,
+  getUserById,
   confirmEmailById,
   createUser,
 };

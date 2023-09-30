@@ -6,6 +6,24 @@ const emailService = require('../services/email');
 const tokenService = require('../services/token');
 
 /**
+ * Given refreshToken, generates new token pair
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @returns {void}
+ */
+async function refreshAccessToken(req, res) {
+  const { refreshToken: refreshTokenFromPayload } = req.body;
+  const { accessToken, refreshToken } = await tokenService.refreshAccessToken(
+    refreshTokenFromPayload
+  );
+  res.send({
+    error: null,
+    accessToken,
+    refreshToken,
+  });
+}
+
+/**
  * This controller confirms users email and updates user
  * @param {express.Request} req
  * @param {express.Response} res
@@ -95,4 +113,5 @@ module.exports = {
   login,
   registration,
   emailConfirmation,
+  refreshAccessToken,
 };
