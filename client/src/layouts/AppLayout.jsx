@@ -1,4 +1,5 @@
 import { Outlet, Link } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
 import {
   Box,
   Menu,
@@ -12,6 +13,9 @@ import {
 } from '@chakra-ui/react';
 
 function AppLayout() {
+  const decoded = jwt_decode(localStorage.getItem('access_token'));
+  const imageURL = 'http://localhost:8080/' + decoded.image;
+
   return (
     <>
       <Box
@@ -23,7 +27,13 @@ function AppLayout() {
         borderBottomWidth="1px"
       >
         <Heading>E-commerce IATC</Heading>
-        <Button marginLeft="auto" marginRight="4" colorScheme="blue" as={Link} to="/create-product">
+        <Button
+          marginLeft="auto"
+          marginRight="4"
+          colorScheme="blue"
+          as={Link}
+          to="/create-product"
+        >
           Create product
         </Button>
         <Menu>
@@ -32,13 +42,15 @@ function AppLayout() {
               <Avatar
                 marginRight="3"
                 name="Orkhan Huseynli"
-                src="https://bit.ly/broken-link"
+                src={imageURL}
               />
               <Text fontWeight="bold">Orkhan Huseynli</Text>
             </Box>
           </MenuButton>
           <MenuList>
-            <MenuItem>Profile</MenuItem>
+            <MenuItem as={Link} to="/profile">
+              Profile
+            </MenuItem>
             <MenuItem>Purchase history</MenuItem>
             <MenuItem>Log out</MenuItem>
           </MenuList>

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const sequelize = require('./database/index');
 const authMiddleware = require('./middlewares/auth');
@@ -21,6 +22,8 @@ EmailConfirmation.belongsTo(User, { as: 'user' });
 sequelize.sync({ force: false });
 
 const app = express();
+
+app.use('/public', express.static(path.resolve('src', 'public')));
 
 app.use(
   cors({

@@ -17,7 +17,7 @@ function generateTokenPair(user) {
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: '1m',
+      expiresIn: '5m',
     }
   );
 

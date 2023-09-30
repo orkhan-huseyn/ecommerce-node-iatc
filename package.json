@@ -7,7 +7,14 @@
     "client:dev": "npm --prefix ./client/ run dev",
     "server:dev": "npm --prefix ./server/ run dev"
   },
-  "keywords": ["ecommerce", "node", "react"],
+  "keywords": [
+    "ecommerce",
+    "node",
+    "react"
+  ],
   "author": "orkhan-huseyn",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "multer": "^1.4.5-lts.1"
+  }
 }

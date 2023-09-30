@@ -5,6 +5,7 @@ import RegistrationPage from './pages/Registration';
 import HomePage from './pages/Home';
 import AppLayout from './layouts/AppLayout';
 import CreateProductPage from './pages/CreateProduct';
+import ProfilePage from './pages/ProfilePage';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: 'create-product',
         element: <CreateProductPage />,
+      },
+      {
+        path: 'profile',
+        element: <ProfilePage />,
       },
     ],
   },
