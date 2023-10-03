@@ -1,5 +1,5 @@
 import { Outlet, Link } from 'react-router-dom';
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 import {
   Box,
   Menu,
@@ -14,7 +14,9 @@ import {
 
 function AppLayout() {
   const decoded = jwt_decode(localStorage.getItem('access_token'));
-  const imageURL = 'http://localhost:8080/' + decoded.image;
+  const imageURL = decoded.image
+    ? '/api' + decoded.image
+    : null;
 
   return (
     <>
@@ -39,11 +41,7 @@ function AppLayout() {
         <Menu>
           <MenuButton>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <Avatar
-                marginRight="3"
-                name="Orkhan Huseynli"
-                src={imageURL}
-              />
+              <Avatar marginRight="3" name="Orkhan Huseynli" src={imageURL} />
               <Text fontWeight="bold">Orkhan Huseynli</Text>
             </Box>
           </MenuButton>

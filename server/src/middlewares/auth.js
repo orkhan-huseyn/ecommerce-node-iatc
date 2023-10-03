@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
  * @param {express.NextFunction} next
  */
 function authMiddleware(req, res, next) {
-  if (req.url.startsWith('/auth')) {
+  if (req.url.startsWith('/api/auth')) {
     return next();
   }
 

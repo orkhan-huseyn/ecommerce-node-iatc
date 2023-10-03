@@ -1,19 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const { updateProfileImage } = require('../controllers/users');
+const { createMulterStorage } = require('../utils/createMulterStorage');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'src/public/images');
-  },
-  filename: function (req, file, cb) {
-    const [, ext] = file.originalname.split('.');
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + ext);
-  },
-});
-
-const upload = multer({ storage });
+const upload = multer({ storage: createMulterStorage('src/public/images/users') });
 
 const router = express.Router();
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from '../axios';
+import { ProductItem } from '../components/ProductItem';
 
 function HomePage() {
   const [products, setProducts] = useState([]);
@@ -14,7 +15,13 @@ function HomePage() {
     };
   }, []);
 
-  return <h1>{JSON.stringify(products)}</h1>;
+  return (
+    <div>
+      {products.map((product) => (
+        <ProductItem key={product.id} {...product} />
+      ))}
+    </div>
+  );
 }
 
 export default HomePage;

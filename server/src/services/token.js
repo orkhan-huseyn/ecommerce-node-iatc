@@ -13,6 +13,7 @@ function generateTokenPair(user) {
       userId: user.id,
       fullName: user.fullName,
       email: user.email,
+      emailConfirmed: user.emailConfirmed,
       image: user.image,
     },
     process.env.JWT_SECRET_KEY,
