@@ -55,15 +55,10 @@ app.use(xssClean());
 
 app.use('/api', APP_ROUTER);
 
-class APIError extends Error {
-  constructor(message, status) {
-    super(message);
-    this.status = status;
-  } 
-}
-
 app.use(function (error, req, res, next) {
-  res.status(500).send({ error: error.message });
+  const statusCode = error.status || 500;
+  const message = error.message || 'Ooops! Something went wrong.';
+  res.status(statusCode).send({ error: message });
 });
 
 module.exports = app;
