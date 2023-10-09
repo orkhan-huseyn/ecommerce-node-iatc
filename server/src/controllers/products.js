@@ -12,6 +12,10 @@ const ServerError = require("../exception/serverError");
  */
 async function getAllProducts(req, res) {
   try {
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+    const offset = (page - 1) * limit;
+
     const products = await Product.findAll({
       attributes: [
         "id",
@@ -22,6 +26,8 @@ async function getAllProducts(req, res) {
         "condition",
         "rating",
       ],
+      offset,
+      limit,
       include: {
         model: ProductImage,
       },
