@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: '/api/v1',
 });
 
 axiosInstance.interceptors.request.use(function (config) {
@@ -11,7 +11,6 @@ axiosInstance.interceptors.request.use(function (config) {
       Authorization: accessToken,
     };
   }
-
   return config;
 });
 
@@ -21,7 +20,7 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    if (error.config.url !== '/auth/login' && error.response.status === 401) {
+    if (error.config.url !== '/api/v1/auth/login' && error.response.status === 401) {
       const response = await axiosInstance.post('/auth/token', {
         refreshToken: localStorage.getItem('refresh_token'),
       });

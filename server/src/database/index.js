@@ -1,7 +1,7 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize({
-  dialect: 'postgres',
+  dialect: "postgres",
   host: process.env.DATABASE_HOST,
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
@@ -10,10 +10,10 @@ const sequelize = new Sequelize({
 sequelize
   .authenticate()
   .then(function () {
-    console.log('Connected to db successfully!');
+    console.log("Connected to db successfully!");
   })
   .catch(function (error) {
-    console.log('Error connecting db: ' + error.message);
+    console.log("Error connecting db: " + error.message);
   });
 
 module.exports = sequelize;

@@ -1,12 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const moment = require('moment');
-const sequelize = require('sequelize');
-const { Op } = require('sequelize');
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const moment = require("moment");
+const sequelize = require("sequelize");
+const { Op } = require("sequelize");
 
-const EmailConfirmation = require('../models/emailConfirmation');
+const EmailConfirmation = require("../models/emailConfirmation");
 
 const transport = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -23,11 +23,11 @@ const transport = nodemailer.createTransport({
  */
 async function sendConfirmationEmail(user) {
   const emailTemplate = fs
-    .readFileSync(path.resolve('src', 'email-templates', 'confirmation.html'))
+    .readFileSync(path.resolve("src", "email-templates", "confirmation.html"))
     .toString();
 
-  const expiresAt = moment().add(1, 'hour').toDate();
-  const confirmationToken = crypto.randomBytes(64).toString('base64url');
+  const expiresAt = moment().add(1, "hour").toDate();
+  const confirmationToken = crypto.randomBytes(64).toString("base64url");
   const confirmationURL = `http://localhost:8080/auth/email-confirmation/${confirmationToken}`;
 
   await EmailConfirmation.create({
@@ -37,12 +37,12 @@ async function sendConfirmationEmail(user) {
   });
 
   await transport.sendMail({
-    from: 'E-Commerce IATC <info@e-commerce-iatc>',
+    from: "E-Commerce IATC <info@e-commerce-iatc>",
     to: user.email,
-    subject: 'Confirm your email',
+    subject: "Confirm your email",
     html: emailTemplate
-      .replace('{confirmationURL}', confirmationURL)
-      .replace('{fullName}', user.fullName),
+      .replace("{confirmationURL}", confirmationURL)
+      .replace("{fullName}", user.fullName),
   });
 }
 
@@ -55,7 +55,7 @@ async function findActiveConfirmation(confirmationToken) {
     where: {
       confirmationToken,
       expiresAt: {
-        [Op.gt]: sequelize.literal('NOW()'),
+        [Op.gt]: sequelize.literal("NOW()"),
       },
     },
   });

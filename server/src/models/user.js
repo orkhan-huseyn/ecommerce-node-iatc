@@ -1,12 +1,12 @@
-const { DataTypes, Sequelize } = require('sequelize');
-const sequelize = require('../database/index');
+const { DataTypes, Sequelize } = require("sequelize");
+const sequelize = require("../database/index");
 
 const User = sequelize.define(
-  'User',
+  "User",
   {
     id: {
       type: DataTypes.UUID,
-      defaultValue: Sequelize.literal('uuid_generate_v4()'),
+      defaultValue: Sequelize.literal("uuid_generate_v4()"),
       primaryKey: true,
     },
     fullName: {
@@ -31,8 +31,8 @@ const User = sequelize.define(
       allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM('ACTIVE', 'BLOCKED', 'BANNED'),
-      defaultValue: 'ACTIVE',
+      type: DataTypes.ENUM("ACTIVE", "BLOCKED", "BANNED"),
+      defaultValue: "ACTIVE",
     },
   },
   {
@@ -40,9 +40,9 @@ const User = sequelize.define(
     paranoid: true,
     indexes: [
       {
-        name: 'users_email_index',
-        using: 'BTREE',
-        fields: ['email'],
+        name: "users_email_index",
+        using: "BTREE",
+        fields: ["email"],
       },
     ],
   }

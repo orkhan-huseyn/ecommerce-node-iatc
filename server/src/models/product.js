@@ -1,12 +1,12 @@
-const { DataTypes, Sequelize } = require('sequelize');
-const sequelize = require('../database/index');
+const { DataTypes, Sequelize } = require("sequelize");
+const sequelize = require("../database/index");
 
 const Product = sequelize.define(
-  'Product',
+  "Product",
   {
     id: {
       type: DataTypes.UUID,
-      defaultValue: Sequelize.literal('uuid_generate_v4()'),
+      defaultValue: Sequelize.literal("uuid_generate_v4()"),
       primaryKey: true,
     },
     title: {
@@ -30,7 +30,7 @@ const Product = sequelize.define(
       allowNull: true,
     },
     condition: {
-      type: DataTypes.ENUM('NEW', 'USED', 'REFURBISHED'),
+      type: DataTypes.ENUM("NEW", "USED", "REFURBISHED"),
       allowNull: false,
     },
   },

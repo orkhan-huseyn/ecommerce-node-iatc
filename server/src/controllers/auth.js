@@ -100,6 +100,7 @@ async function login(req, res, next) {
  * @returns {void}
  */
 async function registration(req, res, next) {
+  console.log('Salam!');
   try {
     const { fullName, email, password } = req.body;
 

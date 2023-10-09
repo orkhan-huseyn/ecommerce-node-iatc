@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/index');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../database/index");
 
 const ProductCategory = sequelize.define(
-  'ProductCategory',
+  "ProductCategory",
   {
     title: {
       type: DataTypes.STRING,

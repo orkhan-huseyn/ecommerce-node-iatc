@@ -1,12 +1,14 @@
-const express = require('express');
-const authRouter = require('./auth');
-const productsRouter = require('./products');
-const usersRouter = require('./users');
+const express = require("express");
+const authRouter = require("./auth");
+const productsRouter = require("./products");
+const usersRouter = require("./users");
 
-const APP_ROUTER = express.Router();
+const V1_ROUTER = express.Router();
 
-APP_ROUTER.use('/auth', authRouter);
-APP_ROUTER.use('/products', productsRouter);
-APP_ROUTER.use('/users', usersRouter);
+V1_ROUTER.use("/auth", authRouter);
+V1_ROUTER.use("/products", productsRouter);
+V1_ROUTER.use("/users", usersRouter);
 
-module.exports = APP_ROUTER;
+module.exports = {
+  V1_ROUTER,
+};

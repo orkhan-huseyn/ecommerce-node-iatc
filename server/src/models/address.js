@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/index');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../database/index");
 
 const Address = sequelize.define(
-  'Address',
+  "Address",
   {
     addressLine1: {
       type: DataTypes.STRING,

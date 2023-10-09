@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/index');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../database/index");
 
 const ProductImage = sequelize.define(
-  'ProductImage',
+  "ProductImage",
   {
     url: {
       type: DataTypes.STRING,

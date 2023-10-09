@@ -1,5 +1,5 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
+const express = require("express");
+const jwt = require("jsonwebtoken");
 
 /**
  * Authentication middleware
@@ -8,14 +8,14 @@ const jwt = require('jsonwebtoken');
  * @param {express.NextFunction} next
  */
 function authMiddleware(req, res, next) {
-  if (req.url.startsWith('/api/auth')) {
+  if (req.url.startsWith("/api/v1/auth")) {
     return next();
   }
 
-  const accessToken = req.headers['authorization'];
+  const accessToken = req.headers["authorization"];
   if (!accessToken) {
     return res.status(401).send({
-      error: 'Authorization header is not present!',
+      error: "Authorization header is not present!",
     });
   }
 

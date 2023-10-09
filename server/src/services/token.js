@@ -1,7 +1,7 @@
-const { Model } = require('sequelize');
-const jwt = require('jsonwebtoken');
+const { Model } = require("sequelize");
+const jwt = require("jsonwebtoken");
 
-const userService = require('./users');
+const userService = require("./users");
 
 /**
  * Generates access token and refresh token pairs
@@ -18,7 +18,7 @@ function generateTokenPair(user) {
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: '5m',
+      expiresIn: "5m",
     }
   );
 
@@ -27,7 +27,7 @@ function generateTokenPair(user) {
     { userId: user.id },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: '30 days',
+      expiresIn: "30 days",
     }
   );
 

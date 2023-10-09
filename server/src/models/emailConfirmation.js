@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/index');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../database/index");
 
 const EmailConfirmation = sequelize.define(
-  'EmailConfirmation',
+  "EmailConfirmation",
   {
     confirmationToken: {
       type: DataTypes.STRING,
