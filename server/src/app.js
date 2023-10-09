@@ -5,7 +5,6 @@ const xssClean = require("xss-clean");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
 const RedisStore = require("rate-limit-redis");
-const { createClient } = require("redis");
 const { V1_ROUTER } = require("./routes");
 
 const sequelize = require("./database/index");
@@ -18,6 +17,7 @@ const ProductCategory = require("./models/productCategory");
 const ProductImage = require("./models/productImage");
 const EmailConfirmation = require("./models/emailConfirmation");
 const logger = require("./lib/winston");
+const redisClient = require("./lib/redis");
 
 Address.belongsTo(User, { as: "user" });
 Product.belongsTo(User, { as: "seller" });
@@ -30,18 +30,6 @@ EmailConfirmation.belongsTo(User, { as: "user" });
 sequelize.sync({ force: false });
 
 const app = express();
-
-const redisClient = createClient({
-  url: process.env.REDIS_CONNECTION_URL,
-});
-redisClient
-  .connect()
-  .then(function () {
-    console.log("Successfully connected to redis database.");
-  })
-  .catch(function (error) {
-    console.log("Error connecting to redis: " + error.message);
-  });
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -70,7 +58,7 @@ app.use(function (error, req, res, next) {
   const statusCode = error.status || 500;
   const message = error.message || "Ooops! Something went wrong.";
   logger.error("Error middleware caught an error", error);
-  res.status(statusCode).send({ error: message });
+  res.status(statusCode).send({ error: message, stack: error.stack });
 });
 
 module.exports = app;

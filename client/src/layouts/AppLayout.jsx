@@ -1,4 +1,4 @@
-import { Outlet, Link, Navigate } from "react-router-dom";
+import { Outlet, Link, Navigate, useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import {
   Box,
@@ -11,8 +11,10 @@ import {
   Heading,
   Button,
 } from "@chakra-ui/react";
+import axios from '../axios';
 
 function AppLayout() {
+  const navigate = useNavigate();
   const accessToken = localStorage.getItem("access_token");
 
   if (!accessToken) {
@@ -21,6 +23,12 @@ function AppLayout() {
 
   const decoded = jwt_decode(accessToken);
   const imageURL = decoded.image ? "/api" + decoded.image : null;
+
+  async function handleLogout() {
+    await axios.post('/auth/logout');
+    localStorage.clear();
+    navigate('/login');
+  }
 
   return (
     <>
@@ -54,7 +62,7 @@ function AppLayout() {
               Profile
             </MenuItem>
             <MenuItem>Purchase history</MenuItem>
-            <MenuItem>Log out</MenuItem>
+            <MenuItem onClick={handleLogout}>Log out</MenuItem>
           </MenuList>
         </Menu>
       </Box>

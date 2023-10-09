@@ -16,8 +16,12 @@ const logger = require("../lib/winston");
  */
 async function refreshAccessToken(req, res, next) {
   try {
-    const { refreshToken: refreshTokenFromPayload } = req.body;
+    const {
+      accessToken: accessTokenFromPayload,
+      refreshToken: refreshTokenFromPayload,
+    } = req.body;
     const { accessToken, refreshToken } = await tokenService.refreshAccessToken(
+      accessTokenFromPayload,
       refreshTokenFromPayload
     );
     logger.info(
@@ -85,7 +89,7 @@ async function login(req, res, next) {
       return next(new ServerError("Email or password is incorrect!", 401));
     }
 
-    const { accessToken, refreshToken } = tokenService.generateTokenPair(user);
+    const { accessToken, refreshToken } = await tokenService.generateTokenPair(user);
     logger.info("User " + user.id + " logged in successfully.");
 
     res.send({
@@ -131,8 +135,25 @@ async function registration(req, res, next) {
   }
 }
 
+/**
+ * Logs user out and invalidates token pairs
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @returns {void}
+ */
+async function logout(req, res, next) {
+  try {
+    await tokenService.invalidateToken(req.user.accessToken);
+    res.send();
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   login,
+  logout,
   registration,
   emailConfirmation,
   refreshAccessToken,

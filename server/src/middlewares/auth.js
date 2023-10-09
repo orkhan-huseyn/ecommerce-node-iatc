@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const redisClient = require("../lib/redis");
 
 /**
  * Authentication middleware
@@ -7,7 +8,7 @@ const jwt = require("jsonwebtoken");
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   if (req.url.startsWith("/api/v1/auth")) {
     return next();
   }
@@ -19,9 +20,16 @@ function authMiddleware(req, res, next) {
     });
   }
 
+  const userInfo = await redisClient.get(accessToken);
+  if (!userInfo) {
+    return res.status(401).send({
+      error: "This session has been terminated, please log in again!",
+    });
+  }
+
   try {
-    const payload = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
-    req.user = payload;
+    jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+    req.user = JSON.parse(userInfo);
   } catch (error) {
     return res.status(401).send({ error: error.message });
   }
