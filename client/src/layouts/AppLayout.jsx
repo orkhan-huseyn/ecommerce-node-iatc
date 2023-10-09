@@ -1,5 +1,5 @@
-import { Outlet, Link } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
+import { Outlet, Link, Navigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 import {
   Box,
   Menu,
@@ -10,13 +10,17 @@ import {
   Text,
   Heading,
   Button,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 function AppLayout() {
-  const decoded = jwt_decode(localStorage.getItem('access_token'));
-  const imageURL = decoded.image
-    ? '/api' + decoded.image
-    : null;
+  const accessToken = localStorage.getItem("access_token");
+
+  if (!accessToken) {
+    return <Navigate to="/login" />;
+  }
+
+  const decoded = jwt_decode(accessToken);
+  const imageURL = decoded.image ? "/api" + decoded.image : null;
 
   return (
     <>

@@ -7,6 +7,7 @@ const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 
 const EmailConfirmation = require("../models/emailConfirmation");
+const logger = require("../lib/winston");
 
 const transport = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -44,6 +45,8 @@ async function sendConfirmationEmail(user) {
       .replace("{confirmationURL}", confirmationURL)
       .replace("{fullName}", user.fullName),
   });
+
+  logger.info("Confirmation sent successfully to " + user.email);
 }
 
 /**

@@ -1,0 +1,41 @@
+version: "5"
+services:
+  main_database:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
+      - /var/lib/postgresql:/var/lib/postgresql
+  
+  cache_database:
+    image: "redis:latest"
+
+  frontend:
+    depends_on:
+      - backend
+    ports:
+     - "80:3000"
+    build:
+      context: ./client
+
+  backend:
+    restart: always
+    depends_on:
+      - main_database
+    build:
+      context: ./server
+    environment:
+      - DATABASE_HOST=main_database
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+
+      - REDIS_CONNECTION_URL=redis://default:redispw@cache_database:6379
+
+      - EMAIL_HOST=sandbox.smtp.mailtrap.io
+      - EMAIL_PORT=2525
+      - EMAIL_USERNAME=de65a660bdd8b5
+      - EMAIL_PASSWORD=01c42de04953e2
+
+      - JWT_SECRET_KEY=43308f71df1659a340f79f225b527dcc5995edd0766fe01768c2759d6a93c98065c2bd6e56f102b78bbe7cefca668564304449ae1e42aeaa84a8bec883892a4d
+      - CLIENT_ORIGIN=http://localhost:3000

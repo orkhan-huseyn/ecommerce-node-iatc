@@ -20,7 +20,7 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    if (error.config.url !== '/api/v1/auth/login' && error.response.status === 401) {
+    if (error.config.url !== '/auth/login' && error.response.status === 401) {
       const response = await axiosInstance.post('/auth/token', {
         refreshToken: localStorage.getItem('refresh_token'),
       });

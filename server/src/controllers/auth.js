@@ -5,6 +5,7 @@ const userService = require("../services/users");
 const emailService = require("../services/email");
 const tokenService = require("../services/token");
 const ServerError = require("../exception/serverError");
+const logger = require("../lib/winston");
 
 /**
  * Given refreshToken, generates new token pair
@@ -18,6 +19,9 @@ async function refreshAccessToken(req, res, next) {
     const { refreshToken: refreshTokenFromPayload } = req.body;
     const { accessToken, refreshToken } = await tokenService.refreshAccessToken(
       refreshTokenFromPayload
+    );
+    logger.info(
+      "Token " + accessToken + " was refreshed by " + refreshTokenFromPayload
     );
     res.send({
       error: null,
@@ -50,6 +54,7 @@ async function emailConfirmation(req, res, next) {
     }
 
     await userService.confirmEmailById(emailConfirmation.userId);
+    logger.info("User " + user.id + "  confirmed his/her email successfully");
 
     res.send({
       error: null,
@@ -81,6 +86,7 @@ async function login(req, res, next) {
     }
 
     const { accessToken, refreshToken } = tokenService.generateTokenPair(user);
+    logger.info("User " + user.id + " logged in successfully.");
 
     res.send({
       error: null,
@@ -100,7 +106,6 @@ async function login(req, res, next) {
  * @returns {void}
  */
 async function registration(req, res, next) {
-  console.log('Salam!');
   try {
     const { fullName, email, password } = req.body;
 
@@ -110,6 +115,7 @@ async function registration(req, res, next) {
     }
 
     const user = await userService.createUser(email, fullName, password);
+    logger.info("User created successfully", user.id);
     emailService.sendConfirmationEmail(user);
 
     res.status(201).send({

@@ -17,6 +17,7 @@ const Address = require("./models/address");
 const ProductCategory = require("./models/productCategory");
 const ProductImage = require("./models/productImage");
 const EmailConfirmation = require("./models/emailConfirmation");
+const logger = require("./lib/winston");
 
 Address.belongsTo(User, { as: "user" });
 Product.belongsTo(User, { as: "seller" });
@@ -30,7 +31,9 @@ sequelize.sync({ force: false });
 
 const app = express();
 
-const redisClient = createClient();
+const redisClient = createClient({
+  url: process.env.REDIS_CONNECTION_URL,
+});
 redisClient
   .connect()
   .then(function () {
@@ -66,6 +69,7 @@ app.use("/api/v1", V1_ROUTER);
 app.use(function (error, req, res, next) {
   const statusCode = error.status || 500;
   const message = error.message || "Ooops! Something went wrong.";
+  logger.error("Error middleware caught an error", error);
   res.status(statusCode).send({ error: message });
 });
 
