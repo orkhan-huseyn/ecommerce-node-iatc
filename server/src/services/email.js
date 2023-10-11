@@ -29,7 +29,7 @@ async function sendConfirmationEmail(user) {
 
   const expiresAt = moment().add(1, "hour").toDate();
   const confirmationToken = crypto.randomBytes(64).toString("base64url");
-  const confirmationURL = `http://localhost:8080/auth/email-confirmation/${confirmationToken}`;
+  const confirmationURL = `http://localhost:8080/api/v1/auth/email-confirmation/${confirmationToken}`;
 
   await EmailConfirmation.create({
     userId: user.id,

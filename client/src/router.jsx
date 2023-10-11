@@ -1,37 +1,42 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from "react-router-dom";
 
-import LoginPage from './pages/Login';
-import RegistrationPage from './pages/Registration';
-import HomePage from './pages/Home';
-import AppLayout from './layouts/AppLayout';
-import CreateProductPage from './pages/CreateProduct';
-import ProfilePage from './pages/ProfilePage';
+import LoginPage from "./pages/Login";
+import RegistrationPage from "./pages/Registration";
+import HomePage from "./pages/Home";
+import AppLayout from "./layouts/AppLayout";
+import CreateProductPage from "./pages/CreateProduct";
+import ProfilePage from "./pages/ProfilePage";
+import Checkout from "./pages/Checkout";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <AppLayout />,
     children: [
       {
-        path: '',
+        path: "",
         element: <HomePage />,
       },
       {
-        path: 'create-product',
+        path: "create-product",
         element: <CreateProductPage />,
       },
       {
-        path: 'profile',
+        path: "profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "checkout",
+        element: <Checkout />,
       },
     ],
   },
   {
-    path: '/login',
+    path: "/login",
     element: <LoginPage />,
   },
   {
-    path: '/registration',
+    path: "/registration",
     element: <RegistrationPage />,
   },
 ]);

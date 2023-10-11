@@ -2,6 +2,8 @@ version: "5"
 services:
   main_database:
     image: "postgres:latest"
+    ports:
+     - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=postgres
     volumes:
@@ -10,6 +12,8 @@ services:
   
   cache_database:
     image: "redis:latest"
+    ports:
+     - "6379:6379"
 
   frontend:
     depends_on:

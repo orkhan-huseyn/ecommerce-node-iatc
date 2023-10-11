@@ -16,6 +16,9 @@ const Address = require("./models/address");
 const ProductCategory = require("./models/productCategory");
 const ProductImage = require("./models/productImage");
 const EmailConfirmation = require("./models/emailConfirmation");
+const Order = require("./models/order");
+const OrderItem = require("./models/orderItem");
+
 const logger = require("./lib/winston");
 const redisClient = require("./lib/redis");
 
@@ -26,10 +29,25 @@ ProductCategory.belongsTo(ProductCategory, { as: "parent" });
 Product.hasMany(ProductImage);
 ProductImage.belongsTo(Product, { as: "product" });
 EmailConfirmation.belongsTo(User, { as: "user" });
+User.hasMany(Order);
+Order.belongsTo(User, { as: "user" });
+OrderItem.belongsTo(Order, { as: "order" });
+Order.hasMany(OrderItem);
+OrderItem.belongsTo(Product, { as: "product" });
+Product.hasMany(OrderItem);
 
 sequelize.sync({ force: false });
 
 const app = express();
+
+app.post(
+  "/webhook",
+  express.json({ type: "application/json" }),
+  (req, res, next) => {
+    console.log(req.body.type);
+    res.send();
+  }
+);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
