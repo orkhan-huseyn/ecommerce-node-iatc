@@ -2,7 +2,7 @@ name: "Finger deploy"
 
 on:
   pull_request:
-    types: [labeled, opened]
+    types: [labeled]
 
 jobs:
   validate-code:
